@@ -1,0 +1,180 @@
+IMPACT-PROP v1.0 README
+Authors: Andrew Walker, Mike Shoemaker, and Sean Brennan
+
+**********************************************************************************
+
+QUICK START: HOW TO RUN THE PROPAGATOR
+
+From the src folder:
+
+1) Create the "propagator" executable by typing "make".
+
+2) Use "./propagator" to run the code in serial.
+
+3) To run the code in parallel, turn on MPI parallelization by changing PARALLEL 
+to 1 in defs.h and changing "CC" from "cc" to "mpicc" on the first line of the 
+Makefile, and recompile.
+
+4) The command to run the propagator in parallel is "mpiexec -n N ./propagator" 
+where "N" is the number of processors to be used.
+
+**********************************************************************************
+
+The IMPACT-PROP directory is divided into three directories:
+
+1) src - C source code and header files are located here.
+
+2) data - The input file and other necessary data files that are read 
+into the propagator are located here.
+
+3) test - A python script (and the necessary STK "truth" data) 
+that allows simulation of 15 pre-defined test cases is located here.
+
+**********************************************************************************
+
+SOURCE CODE DIRECTORY:
+
+The propagator source code is composed of 16 C files:
+
+1) acceleration.c - Contains functions that compute the individual forces 
+such as two body, drag, or SRP.
+
+2) assoclegendre.c - Contains functions that compute and normalize the 
+associated Legendre polynomials used to compute the higher order gravity terms.
+
+3) atmprop.c - Computes the atmospheric properties at the satellite position.
+
+4) Cd.c - Computes the drag coefficient at the satellite position based on the 
+atmospheric and satellite properties.
+
+5) config.c - Defines a series of integers that turn on/off relevant physics.
+
+6) emu.c - Computes the response surface model for complex satellite drag coefficients.
+
+7) interpolation.c - Interpolates atmospheric properties from MSIS or GITM data 
+points at the satellite location.
+
+8) io.c - Handles the reading and writing of data for the propagator code.
+
+9) main.c - Primarily created to handle integration with python code and DIORAMA.
+
+10) misc.c - Contains some linear algebra functions and a few other miscellaneous 
+functions necessary for the propagator.
+
+11) msisinputs.c - Reads and computes the proper Space Weather inputs for MSIS.
+
+12) nrlmsise-00.c - Computes NRLMSISE-00 atmospheric properties.
+
+13) nrlmsise-00_data.c - Contains necessary constants for NRLMSISE-00 computations.
+
+14) propagator.c - Contains the required initialization and propagation time loop
+for simulation. The "propagate" function inside propagator.c is the true "main"
+function for IMPACT-PROP.
+
+15) rhseom.c - Computes the Right-Hand-Side of the Equations of Motion.
+
+16) rk.c - Contains 4th and 7/8th order Runge-Kutta methods to solve the equations 
+of motion.
+
+17) transformation.c - Contains important functions for converting between different 
+coordinate systems.
+
+**********************************************************************************
+
+OTHER IMPORTANT FILES IN SRC:
+
+defs.h is another important file in the src folder. It contains a variety of defintions
+for constants used throughout the propagator code. Some important parameters that are
+defined in defs.h include:
+
+1) Earth Equatorial & Polar Radius
+2) GM for Earth
+3) Earth Angular Velocity
+4) Sun and Moon GM
+5) The Number of Array Elements that Define the Atmospheric Properties Array
+
+propdata_i_j.dat is the final output of the propagator. It contains the time and position
+in cartesian coordinates in the J2000 frame. The "i] in the filename is a reference
+to the satellite catalog number while "j" is a reference to the index of the ensemble
+member simulated. If N satellites are simulated, then N propdata_i.dat files will be
+generated, where i is the ensemble member index.
+
+**********************************************************************************
+
+DATA DIRECTORY
+
+The files include in the data directory include:
+
+1) 24920.txt - A text file that contains the initial states of an ensemble of satellites.
+The name is based on the catalog number of the satellite and is drawn from the input file
+based on the line "Satellite Catalog Number".
+
+2) egm96_to360_ascii.txt - Contains gravitational constants from the EGM96 model up to
+360th degree and order.
+
+3) prop.inp - The propagator input file. Contains initial state in keplerian elements
+and the initial simulation time, total simulation time, and timestep. Other important
+parameters include the satellite catalog number, which defines the 24920.txt file to 
+readfor the ensemble of initial states when "StateEnsembles" is turned on, and the number
+of satellites which defines the number of ensembles to read from the 24920.txt file.
+For example, if the number of satellites is set to 100, then 100 separate initial states
+will be read from 24920.txt and each one will be propagated in either serial or parallel
+depending on the compilation of the program.
+
+4) SpaceWeather.dat - When using MSIS to calculate atmospheric properties on the fly, 
+the Space Weather indices such as F107 and ap are required. These space weather indices
+are included in SpaceWeather.dat.
+
+5) USSA1976.dat - Contains a look-up table of densities as a function of altitude for
+the 1976 U.S. Standard Atmosphere.
+
+6) CSPICE_KERNELS - A variety of kernels are required to use JPL's cspice for coordinate
+transformations as well as looking up the precise ephemerides of the Sun and the Moon.
+
+**********************************************************************************
+
+TEST DIRECTORY
+
+The test directory includes two test case folders and one python script:
+
+1) UnitTest.py - Contains all the necessary functions to run IMPACT-PROP for 15 separate
+test cases. Each simulation is compared to pre-computed STK solutions using the High
+Precision Orbital Propagator (HPOP).
+
+2) IP_Test_Cases - The IMPACT-PROP solutions for each test case are copied here.
+
+3) STK_Test_Cases - The pre-computed STK solutions for each test case are located here.
+
+**********************************************************************************
+
+HOW TO RUN THE TEST CASES SCRIPT
+
+From the test folder, use the following command:
+
+1) python UnitTests.py
+
+The output will display whether or not each test case has completed successfully.
+
+**********************************************************************************
+
+TROUBLESHOOTING:
+
+1) If the code seg faults immediately, use "ulimit -s unlimited" to increase the stack size.
+
+2) If there is an error related to the inability to load shared libraries, use the following
+command:
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+
+3) If MPI is not setup, you will have to create a file ".mpd.conf" in your home directory 
+with a the following text:
+
+MPD_SECRETWORD=password
+
+where password is any combination or letter and numbers you'd like to use. 
+
+Next, type mpd & to start the MPI daemon required to run in parallel.
+
+**********************************************************************************
+
+Other questions? Please contact Andrew Walker (awalker@lanl.gov)

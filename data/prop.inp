@@ -1,0 +1,66 @@
+C Propagator Input File
+
+********** Initial State Vector (Keplerian Elements) **********
+
+Semi-Major Axis (km)                                   # 6778.14
+Eccentricity                                           # 0.01
+Inclination (degrees)                                  # 50.0
+Argument of Perigee (degrees)                          # 40.0
+Right-Ascension of the Ascending Node (degrees)        # 30.0
+True Anomaly (degrees)                                 # 20.0
+
+************************* Time Controls ***********************
+
+Initial UTC Time (Format: 2013 JAN 01 00:00:00)		# 2002 OCT 22 00:00:00
+Total Simulation Time (seconds)				# 86400
+Timestep (seconds)					# 10.0
+
+********************** Satellite Controls *********************
+
+Satellite Catalog Number				# 24920.0
+Number of Satellites					# 1.0
+Satellite Position Distribution 1-sigma Variance	# 0.1
+Satellite Velocity Distribution 1-sigma Variance	# 1.0
+
+********************** MSIS Input Controls *********************
+
+Daily Observed F10.7 Solar Flux (sfu)			# 150.0
+81-day Centered F10.7 Solar Flux Average (sfu)		# 150.0
+Daily Averaged Geomagnetic Index (ap)	 		# 0.0
+
+***************** Satellite Property Controls ******************
+
+Satellite geometry (See Cd.c for legend)		# 1.0
+Gas-surface interation model (0=DRIA; 1=CLL)		# 1.0
+Adsorption model (0=Langmuir; 1=Freundlich)	 	# 1.0
+Pitch angle (degrees)                                   # 0.0
+Yaw angle (degrees)                                     # 0.0
+Cylinder radius (meters)                      		# 1.0
+Cuboid or cylinder length (meters)                      # 1.0
+Cuboid height (meters)                                  # 1.0
+Cuboid width (meters)                                   # 1.0
+Surface material particle mass (kg)                     # 4.479e-26
+Total satellite mass (kg)				# 1.0
+Projected satellite area (km^2)				# 2e-07
+Constant Satellite Drag Coefficient (if not HF Cd)	# 2.2
+SRP reflectivity coefficient for satellite surface	# 1.89
+
+************** Propagator Configuration Flags ******************
+
+Use Two-Body Gravity (Should always be set to 1)	# 1
+Use Spherical Harmonic Gravity Field       	  	# 1
+Gravity Field Degree & Order				# 25
+Earth Gravity Model (0=JGM-3; 1=EGM96)			# 1
+Use Solar Radiation Pressure				# 1
+Use Atmospheric Drag					# 1
+Density Model (0=CIRA72;1=MSIS;2=GITM;3=US1976;4=HASDM) # 1
+Dynamically Calculate MSIS Atmospheric Properties 	# 1
+Read Space Weather Data for MSIS/HASDM 			# 0
+Use High-Fidelity Drag Coefficient (Cd) Model		# 0
+Use Response Surface Model (RSM) Cd (GRACE=1; CHAMP=2)  # 0
+Include 3rd Body Gravity Perturbations due to the Sun	# 1
+Include 3rd Body Gravity Perturbations due to the Moon	# 1
+Time interpolation for density (0=nearest; 1=linear)	# 0
+Integration Scheme (4=RK4; 8=RK8; 0=MCPI)  		# 4
+Read from State Ensembles File	  			# 0
+Compute Keplerian Elements each Timestep                # 0

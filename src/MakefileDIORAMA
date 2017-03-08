@@ -1,0 +1,49 @@
+PACKAGE=state-vector-propagator
+VERSION=0.1plus
+CC = gcc
+#LIBS = -lgsl -lgslcblas -lhdf5
+LIBS = `gsl-config --libs` `pkg-config hdf5 --libs`
+
+#CFLAGS = -Wall -g -pg -fPIC -DDATA_DIR="\"../data/\"" $(INCL) $(LIBDIRS) -DDIORAMA=1
+CFLAGS = -I/usr/include/hdf5/serial -Wall -g -pg -fPIC -DDATA_DIR="\"../data/\"" $(INCL) $(LIBDIRS) -DDIORAMA=1
+
+HDRS := defs.h structs.h test.h
+HDRS += acceleration.h assoclegendre.h atmprop.h Cd.h emu.h
+HDRS += interpolation.h io.h misc.h msisinputs.h nrlmsise-00.h
+HDRS += propagator.h rk.h transformation.h rhseom.h
+
+SRCS := acceleration.c assoclegendre.c atmprop.c Cd.c emu.c config.c
+SRCS += interpolation.c io.c main.c misc.c msisinputs.c nrlmsise-00.c
+SRCS += nrlmsise-00_data.c propagator.c rhseom.c rk.c transformation.c
+
+OBJS := $(SRCS:.c=.o)
+
+EXE_NAME := propagator
+LIB_NAME := libpropagator.so
+
+all: $(EXE_NAME) $(LIB_NAME)
+
+$(EXE_NAME): main.c $(LIB_NAME)
+	$(CC) -o $(EXE_NAME) $(OBJS) $(LIBS) $(CFLAGS)
+
+$(LIB_NAME): $(OBJS)
+	$(CC) -o $(LIB_NAME) $(LIBS) $(CFLAGS) -shared
+
+.c.o:	 $(HDRS)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+clean :
+	@rm -f *.o *~
+
+pristine : clean
+	@rm -f *.o *~ $(EXE_NAME)
+
+dist:
+	mkdir $(PACKAGE)-$(VERSION)
+	mkdir $(PACKAGE)-$(VERSION)/src
+	cp --archive ../README $(PACKAGE)-$(VERSION)/
+	cp --archive state-vector-propagator.spec $(HDRS) $(SRCS) Makefile MakefileDIORAMA $(PACKAGE)-$(VERSION)/src/
+	cp --archive ../test $(PACKAGE)-$(VERSION)/test
+	cp --archive ../data $(PACKAGE)-$(VERSION)/data
+	tar zcvf $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)
+	/bin/rm -rf $(PACKAGE)-$(VERSION)

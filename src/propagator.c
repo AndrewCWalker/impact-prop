@@ -285,7 +285,7 @@ void propagator_init(char *atm_dir, const char *data_dir, struct config_struct c
 
   /* Define kernels to load */
   char kernels[NKER][PATH_MAX] = { "spice_kernels/naif0010.tls",
-				   "spice_kernels/earth_000101_141207_140915.bpc",
+				   "spice_kernels/earth_000101_180101_171010.bpc",
 				   "spice_kernels/earth_720101_070426.bpc",
 				   "spice_kernels/de421.bsp" };
 

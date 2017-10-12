@@ -117,6 +117,9 @@ struct sat_struct {
   double phi;
   double theta;
   double shadowflag;
+  double alpha_n;
+  double X[6];
+  
 };
 
 #endif  // STRUCTS_H

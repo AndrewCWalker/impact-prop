@@ -105,6 +105,7 @@ double CdSetup(double U, double Ta, double n[NSPECIES], struct sat_struct *psato
   /* Compute mole fractions for each species */
   for(i=0; i<NSPECIES; i++) {
     X[i] = n[i]/n_TOT;
+    satout->X[i] = X[i];
   }
 
   /* Swap order of species for response surface emulator */
@@ -183,13 +184,14 @@ double CdSetup(double U, double Ta, double n[NSPECIES], struct sat_struct *psato
 
   Cd_TOTAL = fsc*Cd_ads + (1.0-fsc)*Cd_srf;
 
-  //if(it>210 && it<220) { 
+  //if(it>22 && it<28) { 
   //  printf("it = %d Cd_TOTAL = %e\n", it, Cd_TOTAL);
   //  printf("Cd_TOTAL = %e X[0] = %e X[1] = %e X[2] = %e X[3] = %e X[4] = %e X[5] = %e\n", Cd_TOTAL, X[0], X[1], X[2], X[3], X[4], X[5]);
   //  printf("U = %e Ts = %e Ta = %e sigmat = %e alphan_ads = %e theta = %e phi = %e\n", U, Ts, Ta, sigmat, alphan_ads, theta, phi);
-  // }
+  //}
 
   if(rkcounter % RKN ==0) {
+    satout->alpha_n = fsc*alphan_ads + (1.0-fsc)*alphan_sub;
     satout->theta = theta;
     satout->phi = phi;
   }
